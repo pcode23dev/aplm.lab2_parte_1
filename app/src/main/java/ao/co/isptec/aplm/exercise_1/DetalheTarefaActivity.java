@@ -1,12 +1,10 @@
 package ao.co.isptec.aplm.exercise_1;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -15,30 +13,22 @@ public class DetalheTarefaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_detalhe_tarefa);
 
-        TextView textView = findViewById(R.id.txtTarefaRecebida);
+        // 1. Recuperar as tarefas enviadas pela MainActivity
+        ArrayList<String> tarefas = getIntent()
+                .getStringArrayListExtra("Dados");
 
-        ArrayList<String> dados = getIntent().getStringArrayListExtra("Dados");
-        StringBuilder listaFormatada = new StringBuilder();
+        // 2. Encontrar o RecyclerView no XML
+        RecyclerView rvTarefas = findViewById(R.id.rvTarefas);
 
-        if (dados != null && !dados.isEmpty()) {
-            for (int i = 0; i < dados.size(); i++) {
+        // 3. Definir a organização da lista
+        rvTarefas.setLayoutManager(new LinearLayoutManager(this));
 
-                listaFormatada.append(i + 1)
-                        .append(". ")
-                        .append(dados.get(i))
-                        .append("\n");
+        // 4. Criar o Adapter e fornecer os dados
+        TarefaAdapter adapter = new TarefaAdapter(tarefas);
 
-            }
-
-            textView.setText(listaFormatada.toString());
-        } else {
-            Toast.makeText(this, "Nenhuma tarefa encontrada.", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(DetalheTarefaActivity.this, MainActivity.class);
-            startActivity(intent);
-        }
-
+        // 5. Associar o Adapter ao RecyclerView
+        rvTarefas.setAdapter(adapter);
     }
 }
